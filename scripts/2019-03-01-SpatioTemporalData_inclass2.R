@@ -3,9 +3,9 @@
 .libPaths("P:/RLibrary")
 library(tidyverse)
 library(sp)
-# devtools::install_github("andrewzm/STRbook", force = TRUE)
+ devtools::install_github("andrewzm/STRbook", force = TRUE)
 library(STRbook)
-# install.packages("spacetime")
+ install.packages("spacetime")
 library(spacetime)
 
 # Load data
@@ -85,7 +85,7 @@ left_join(NOAA_df_1990, locs, by = "id") %>%
          t = julian - 728050) -> NOAA_df_1990
 
 head(NOAA_df_1990)
-
+tmaxData <- NOAA_df_1990 %>% filter(type=="tmax")
 
 ggplot(data = NOAA_df_1990 %>% filter(type =="tmax", t %in% c(1,15,30))) +
   geom_point(aes(x = long, y = lat, colour = value), size = 2) + 
@@ -105,3 +105,31 @@ head(MOcounties2)
 
 # Create a plot with the per capita income for each missouri county with a facet for 1970, 1980, 1990
 
+
+
+# ANother diagnsosis
+
+set.seed(1234)
+UIDs <- unique(Tmax2$id)
+UIDs_sub <- sample(UIDs, 10)
+UIDs_sub
+
+tmaxSub <- tmaxData %>% filter(id %in% UIDs_sub)
+
+head(tmaxSub)
+# line plot value versus t facetted by ID
+
+ggplot(data = tmaxSub)+ geom_line(aes(x=t, y=value))+ facet_wrap(~id, ncol = 5)
+
+# another explanatory plot
+lim_lat <- range(tmaxData$lat)
+lim_t <- range(tmaxData$t)
+lat_axis <-  seq(lim_lat[1],lim_lat[2], length = 25)# go from minmium to max and has a length of 25
+t_axis <-  seq(lim_t[1],lim_t[2], length = 100)
+25*100
+lat_t_grid <- expand.grid(lat = lat_axis, t=t_axis)
+dim(lat_t_grid )
+tmaxgrid <- tmaxData
+dists <- abs(outer(tmaxData$lat,lat_axis,"-"))# matrix of absolute differences in latitudes between our grid and the original data
+
+tmax_grid$lat <- lat_axis[apply(dists,1, which.min)]
