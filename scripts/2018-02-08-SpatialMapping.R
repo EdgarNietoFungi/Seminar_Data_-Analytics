@@ -38,7 +38,7 @@ plot(asia)
 
 #combine plots
 plot(world["pop"], reset = FALSE)
-plot(asia, add = TRUE, col = "red")
+plot(asia, add = TRUE, col = "red")# with the add function
 
 # plot centroid in each country scaled by population size
 plot(world["continent"], reset = FALSE)
